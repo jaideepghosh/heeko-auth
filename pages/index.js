@@ -1,21 +1,19 @@
-import { useEffect } from "react";
 import { useRouter } from "next/router";
 
-function Home({ sessionUser }) {
+import React, { useEffect } from "react";
+const Home = () => {
   const router = useRouter();
-
-  useEffect(() => {
-    console.log("sessionUser::", sessionUser);
-    if (!sessionUser) {
+  useEffect(async () => {
+    const ls_token = window.localStorage.getItem("token");
+    if (!ls_token) router.push("/login");
+    const res = await fetch(
+      `${window.location.origin}/api/session/me?token=${ls_token}`
+    );
+    if (res.status && res.status !== 200) {
       router.push("/login");
     }
-  }, [sessionUser]);
-
-  return <div>Loading</div>;
-}
-
-Home.getInitialProps = async (ctx) => {
-  return { sessionUser: false };
+    router.push("/dashboard");
+  }, []);
+  return <div>Welcome</div>;
 };
-
 export default Home;
