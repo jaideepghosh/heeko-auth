@@ -2,7 +2,7 @@ import database from "../../../helpers/database";
 
 export default async (req, res) => {
   if (!req.query || !req.query.token) {
-    res.status(422).json({ message: "Token required." });
+    return res.status(422).json({ message: "Token required." });
   }
   try {
     const response = await new Promise((resolve, reject) => {
@@ -29,11 +29,11 @@ export default async (req, res) => {
         }
       );
     });
-    res.status(200).json(response);
+    return res.status(200).json(response);
   } catch (error) {
     console.error("me:: error::", error);
     const message =
       error && error.message ? error.message : "Internal server error.";
-    res.status(500).json({ message });
+    return res.status(500).json({ message });
   }
 };
