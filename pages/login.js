@@ -1,5 +1,6 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
+import Link from "next/link";
 import { toast } from "react-toastify";
 
 import React, { useEffect, useState } from "react";
@@ -167,12 +168,11 @@ const Login = () => {
 
           <div className="flex items-center justify-between">
             <div className="text-sm">
-              <a
-                href="#"
-                className="font-medium text-indigo-600 hover:text-indigo-500"
-              >
-                Forgot your password?
-              </a>
+              <Link href="/forgot-password">
+                <a className="font-medium text-indigo-600 hover:text-indigo-500">
+                  Forgot your password?
+                </a>
+              </Link>
             </div>
           </div>
 
