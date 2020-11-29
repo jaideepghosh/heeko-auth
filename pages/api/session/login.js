@@ -15,6 +15,9 @@ export default async (req, res) => {
           console.error("login:: database.users.findOne:: error::", error);
           return reject(false);
         }
+        if (!doc) {
+          return reject(new Error("Invalid credentials."));
+        }
         //Check password.
         const decryptedPassword = CryptoJS.AES.decrypt(
           doc.password,
