@@ -90,7 +90,7 @@ const ForgotPassword = () => {
           fill="none"
           strokeLinecap="round"
           strokeLinejoin="round"
-          className="h-5 w-5 text-indigo-500 group-hover:text-indigo-400"
+          className="animate-spin h-5 w-5 text-indigo-500 group-hover:text-indigo-400"
         >
           <circle cx="12" cy="12" r="10"></circle>
           <polyline points="12 6 12 12 16 14"></polyline>
