@@ -1,6 +1,100 @@
 import Head from "next/head";
+import { useRouter } from "next/router";
 
+import React, { useEffect, useState } from "react";
 const Login = () => {
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+
+  const login = async (event) => {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    let payload = [];
+    for (let [key, value] of formData.entries()) {
+      payload[key] = value;
+    }
+    setLoading(true);
+    const response = await fetch(
+      `${window.location.origin}/api/session/login`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          email: payload.email,
+          password: payload.password
+        })
+      }
+    );
+    const responseJson = await response.json();
+    if (responseJson && responseJson.token) {
+      window.localStorage.setItem("token", responseJson.token);
+      router.push("/dashboard");
+    } else {
+      console.log("Something went wrong.");
+    }
+    setLoading(false);
+  };
+
+  useEffect(async () => {
+    const ls_token = window.localStorage.getItem("token");
+    if (ls_token && ls_token !== "null") {
+      const res = await fetch(
+        `${window.location.origin}/api/session/me?token=${ls_token}`
+      );
+      if (res.status && res.status === 200) {
+        router.push("/dashboard");
+      }
+    }
+  }, []);
+  const loginButton = loading ? (
+    <button
+      type="submit"
+      className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-200 hover:bg-indigo-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-100"
+      disabled={true}
+    >
+      <span className="absolute left-0 inset-y-0 flex items-center pl-3">
+        <svg
+          className="h-5 w-5 text-indigo-500 group-hover:text-indigo-400"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+          aria-hidden="true"
+        >
+          <path
+            fillRule="evenodd"
+            d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
+            clipRule="evenodd"
+          />
+        </svg>
+      </span>
+      Please wait
+    </button>
+  ) : (
+    <button
+      type="submit"
+      className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+    >
+      <span className="absolute left-0 inset-y-0 flex items-center pl-3">
+        <svg
+          className="h-5 w-5 text-indigo-500 group-hover:text-indigo-400"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+          aria-hidden="true"
+        >
+          <path
+            fillRule="evenodd"
+            d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
+            clipRule="evenodd"
+          />
+        </svg>
+      </span>
+      Login
+    </button>
+  );
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <Head>
@@ -28,7 +122,7 @@ const Login = () => {
             Sign in to your account
           </h2>
         </div>
-        <form className="mt-8 space-y-6" action="#" method="POST">
+        <form className="mt-8 space-y-6" onSubmit={(event) => login(event)}>
           <input type="hidden" name="remember" value="true" />
           <div className="rounded-md shadow-sm -space-y-px">
             <div>
@@ -38,7 +132,7 @@ const Login = () => {
               <input
                 id="email"
                 name="email"
-                type="text"
+                type="email"
                 required
                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                 placeholder="Email address"
@@ -84,33 +178,10 @@ const Login = () => {
             </div>
           </div>
 
-          <div>
-            <button
-              type="submit"
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-            >
-              <span className="absolute left-0 inset-y-0 flex items-center pl-3">
-                <svg
-                  className="h-5 w-5 text-indigo-500 group-hover:text-indigo-400"
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                  aria-hidden="true"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </span>
-              Login
-            </button>
-          </div>
+          <div>{loginButton}</div>
         </form>
       </div>
     </div>
   );
 };
-
 export default Login;
