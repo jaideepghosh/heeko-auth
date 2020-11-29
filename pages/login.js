@@ -1,5 +1,6 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
+import { toast } from "react-toastify";
 
 import React, { useEffect, useState } from "react";
 const Login = () => {
@@ -32,7 +33,17 @@ const Login = () => {
       window.localStorage.setItem("token", responseJson.token);
       router.push("/dashboard");
     } else {
-      console.log("Something went wrong.");
+      const errorMessage =
+        responseJson && responseJson.message
+          ? responseJson.message
+          : "Something went wrong.";
+      toast.error(errorMessage, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true
+      });
     }
     setLoading(false);
   };
@@ -101,6 +112,7 @@ const Login = () => {
         <title>Heeko - Login</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
+
       <div className="max-w-md w-full space-y-8">
         <div>
           <svg
