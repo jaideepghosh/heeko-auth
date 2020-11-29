@@ -6,10 +6,10 @@ dotenv.config();
 
 export default async (req, res) => {
   try {
-    if (!req.body || !req.body.email || !req.body.password) {
-      return reject(new Error("Required input values are missing."));
-    }
     const user = await new Promise((resolve, reject) => {
+      if (!req.body || !req.body.email || !req.body.password) {
+        return reject(new Error("Required input values are missing."));
+      }
       database.users.findOne({ email: req.body.email }, {}, (error, doc) => {
         if (error) {
           console.error("login:: database.users.findOne:: error::", error);
