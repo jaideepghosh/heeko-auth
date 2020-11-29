@@ -179,6 +179,16 @@ const Login = () => {
 
           <div>{loginButton}</div>
         </form>
+        <hr />
+        <p>
+          Not a member yet?{" "}
+          <Link href="/register">
+            <a className="font-medium text-indigo-600 hover:text-indigo-500">
+              Register
+            </a>
+          </Link>{" "}
+          now.
+        </p>
       </div>
     </div>
   );
